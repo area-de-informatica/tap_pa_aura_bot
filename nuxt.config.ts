@@ -7,6 +7,13 @@ export default defineNuxtConfig({
   build: {
     transpile: ['vuetify'],
   },
+  css: ['@/assets/css/main.css'],
+  vite: {
+    define: {
+      'process.env.DEBUG': false,
+    },
+    plugins: [vuetify()],
+  },
 
   modules: [
     '@pinia/nuxt',
@@ -18,11 +25,4 @@ export default defineNuxtConfig({
     },
   ],
 
-  vite: {
-    vue: {
-      template: {
-        transformAssetUrls,
-      },
-    },
-  },
 })

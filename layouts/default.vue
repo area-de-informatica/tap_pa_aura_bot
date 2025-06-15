@@ -1,75 +1,50 @@
 <template>
   <v-app>
-    <!-- App Bar -->
-    <v-app-bar color="black" dark>
-      <v-app-bar-nav-icon @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
-      <v-app-bar-title>AuraBot</v-app-bar-title>
-      <v-spacer></v-spacer>
-    </v-app-bar>
+    <!-- Barra de progreso siempre fija arriba -->
+    <div style="position: sticky; top: 0; z-index: 9999;">
+      <ProgressBar />
+    </div>
 
-    <!-- Navigation Drawer -->
-    <v-navigation-drawer
-      v-model="drawer"
-      :location="$vuetify.display.mobile ? 'bottom' : 'left'"
-      temporary
-    >
-      <v-list-item
-        v-for="(item, i) in items"
-        :key="i"
-        :title="item.title"
-        :to="item.link"
-        color="primary"
-      ></v-list-item>
-    </v-navigation-drawer>
-
-    <!-- Main Content -->
-    <v-main class="pa-6">
+    <v-main>
       <slot />
     </v-main>
 
     <!-- Footer -->
-    <v-footer color="black" class="text-white d-flex flex-column text-center py-6">
-      <!-- Social Icons -->
-      <div class="d-flex justify-center mb-3">
-        <v-btn
-          v-for="icon in icons"
-          :key="icon"
-          :icon="icon"
-          variant="text"
-          color="white"
-          class="mx-2"
-        />
-      </div>
+    <v-footer
+  color="black"
+  class="text-white d-flex flex-column align-center py-6"
+  padless
+>
+  <!-- Texto de descripción -->
+  <div class="text-caption font-weight-light px-4 mb-2" style="max-width: 800px; text-align: center;">
+    Este OVA fue desarrollado como recurso para <strong>Inteligencia Computacional</strong> en la <strong>Universidad de Córdoba</strong>.
+  </div>
 
-      <v-divider class="my-4" color="grey lighten-1" thickness="2" />
+  <!-- Separador -->
+  <v-divider class="my-2" color="grey lighten-1" :thickness="2" style="width: 100%;" />
 
-      <!-- Description -->
-      <div class="text-caption font-weight-light px-4 mb-2" style="max-width: 800px; margin: 0 auto;">
-        Phasellus feugiat arcu sapien, et iaculis ipsum elementum sit amet. Mauris cursus commodo interdum. Praesent ut risus eget metus luctus accumsan id ultrices nunc.
-      </div>
-
-      <!-- Copyright -->
-      <div class="text-caption mt-2">
-        {{ new Date().getFullYear() }} — <strong>AuraBot</strong> con <strong>Vuetify</strong>
-      </div>
-    </v-footer>
+  <!-- Créditos -->
+  <div class="text-caption mt-2" style="text-align: center;">
+    Desarrollado por <strong>Jesus David Gonzales</strong><br>&copy; {{ new Date().getFullYear() }} 
+  </div>
+</v-footer>
   </v-app>
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import ProgressBar from '@/components/ProgressBar.vue'
+import { useProgresoStore } from '@/stores/progreso'
+import { useRoute, onBeforeRouteUpdate } from 'vue-router'
+import { watch } from 'vue'
 
-const drawer = ref(false)
+const progreso = useProgresoStore()
+const route = useRoute()
 
-const items = [
-  { title: 'Inicio', link: '/' },
-  { title: 'Sobre Nosotros', link: '/about' },
-  { title: 'Contacto', link: '/' }
-]
+// Cuando el layout se carga, actualiza progreso
+progreso.actualizarDesdeRuta(route.path)
 
-const icons = [
-  'mdi-facebook',
-  'mdi-twitter',
-  'mdi-instagram'
-]
+// Si navega entre páginas, actualiza también
+watch(() => route.path, (newPath) => {
+  progreso.actualizarDesdeRuta(newPath)
+})
 </script>
