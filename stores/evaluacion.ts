@@ -1,4 +1,3 @@
-// stores/eva.ts
 import { defineStore } from 'pinia'
 
 export const useEvaStore = defineStore('eva', () => {

@@ -26,10 +26,10 @@ export const useProgresoStore = defineStore('progreso', {
       // Define el progreso por ruta
       const progresoPorRuta: Record<string, number> = {
         '/': 1, // index = 1/5 = 20%
-        '/neuronalnets': 2,
-        '/cuestionarios': 3,
-        '/quiz': 4,
-        '/evaluacion': 5
+        '/quiz': 2,
+        '/neuronalnets': 3,
+        '/evaluacion': 4,
+        '/nose': 5
       }
       this.desafiosCompletados = progresoPorRuta[ruta] ?? 0
     }

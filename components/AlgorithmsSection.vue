@@ -1,125 +1,118 @@
 <template>
-  <section class="algorithms-section py-16" id="content">
-    <v-container>
-      <!-- Overlay de bloqueo -->
-      <div v-if="!evaluationPassed" class="locked-overlay">
-        <div class="lock-content">
-          <v-icon size="64" color="warning">mdi-lock</v-icon>
-          <h3 class="lock-title">Contenido Bloqueado</h3>
-          <p class="lock-message">
-            Completa la evaluación para desbloquear los algoritmos principales
-          </p>
-          <router-link to="/quiz">
+  <client-only>
+    <section class="algorithms-section py-16" id="content">
+      <v-container>
+        <!-- Overlay de bloqueo -->
+        <div v-if="!evaluationPassed" class="locked-overlay">
+          <div class="lock-content">
+            <v-icon size="64" color="warning">mdi-lock</v-icon>
+            <h3 class="lock-title">Contenido Bloqueado</h3>
+            <p class="lock-message">
+              Completa la evaluación para desbloquear los algoritmos principales
+            </p>
             <NuxtLink to="/quiz">
-  <v-btn color="deep-purple">
-    Ir a Evaluación
-  </v-btn>
-</NuxtLink>
-</router-link>
-        </div>
-      </div>
-      
-      <!-- Contenido normal de algoritmos -->
-      <div :class="{ 'content-blurred': !evaluationPassed }">
-        <div class="section-header text-center mb-12">
-          <h2 class="section-title">Algoritmos Principales</h2>
-          <p class="section-subtitle">
-            Explora los algoritmos más importantes y sus aplicaciones
-          </p>
+              <v-btn color="deep-purple">
+                Ir a Evaluación
+              </v-btn>
+            </NuxtLink>
+          </div>
         </div>
 
-        <v-row class="mb-8">
-          <v-col 
-            cols="12" 
-            md="4" 
-            v-for="(algorithm, index) in algorithms" 
-            :key="index"
-            class="mb-4"
-          >
-            <div 
-              class="algorithm-card"
-              :class="{ 'card-hover': hoveredCard === index }"
-              @mouseenter="hoveredCard = index"
-              @mouseleave="hoveredCard = null"
-              @click="$emit('go-to-algorithm', algorithm.link)"
+        <!-- Contenido normal de algoritmos -->
+        <div :class="{ 'content-blurred': !evaluationPassed }">
+          <div class="section-header text-center mb-12">
+            <h2 class="section-title">Algoritmos Principales</h2>
+            <p class="section-subtitle">
+              Explora los algoritmos más importantes y sus aplicaciones
+            </p>
+          </div>
+
+          <v-row class="mb-8">
+            <v-col 
+              cols="12" 
+              md="4" 
+              v-for="(algorithm, index) in algorithms" 
+              :key="index"
+              class="mb-4"
             >
-              <div class="card-header">
-                <div class="algorithm-icon">
-                  <v-icon size="48" color="white">{{ algorithm.icon }}</v-icon>
-                </div>
-                <div class="difficulty-badge" :class="algorithm.difficulty">
-                  {{ getDifficultyText(algorithm.difficulty) }}
-                </div>
-              </div>
-              
-              <div class="card-content">
-                <h3 class="algorithm-title">{{ algorithm.title }}</h3>
-                <p class="algorithm-description">{{ algorithm.description }}</p>
-                
-                <div class="applications mb-4">
-                  <h4 class="applications-title">Aplicaciones:</h4>
-                  <div class="application-tags">
-                    <span 
-                      v-for="app in algorithm.applications" 
-                      :key="app"
-                      class="app-tag"
-                    >
-                      {{ app }}
-                    </span>
+              <div 
+                class="algorithm-card"
+                :class="{ 'card-hover': hoveredCard === index }"
+                @mouseenter="hoveredCard = index"
+                @mouseleave="hoveredCard = null"
+                @click="$emit('go-to-algorithm', algorithm.link)"
+              >
+                <div class="card-header">
+                  <div class="algorithm-icon">
+                    <v-icon size="48" color="white">{{ algorithm.icon }}</v-icon>
+                  </div>
+                  <div class="difficulty-badge" :class="algorithm.difficulty">
+                    {{ getDifficultyText(algorithm.difficulty) }}
                   </div>
                 </div>
                 
-                <div class="progress-info">
-                  <div class="progress-label">
-                    <span>Complejidad</span>
-                    <span>{{ algorithm.complexity }}%</span>
+                <div class="card-content">
+                  <h3 class="algorithm-title">{{ algorithm.title }}</h3>
+                  <p class="algorithm-description">{{ algorithm.description }}</p>
+                  
+                  <div class="applications mb-4">
+                    <h4 class="applications-title">Aplicaciones:</h4>
+                    <div class="application-tags">
+                      <span 
+                        v-for="app in algorithm.applications" 
+                        :key="app"
+                        class="app-tag"
+                      >
+                        {{ app }}
+                      </span>
+                    </div>
                   </div>
-                  <v-progress-linear
-                    :model-value="algorithm.complexity"
-                    :color="getComplexityColor(algorithm.complexity)"
-                    height="6"
-                    rounded
-                  ></v-progress-linear>
+                  
+                  <div class="progress-info">
+                    <div class="progress-label">
+                      <span>Complejidad</span>
+                      <span>{{ algorithm.complexity }}%</span>
+                    </div>
+                    <v-progress-linear
+                      :model-value="algorithm.complexity"
+                      :color="getComplexityColor(algorithm.complexity)"
+                      height="6"
+                      rounded
+                    ></v-progress-linear>
+                  </div>
                 </div>
-              </div>
 
-              <div class="card-footer">
-                <v-btn
-                  color="deep-purple"
-                  variant="flat"
-                  block
-                  @click.stop="$emit('go-to-algorithm', algorithm.link)"
-                >
-                  Comenzar a Aprender
-                  <v-icon right>mdi-arrow-right</v-icon>
-                </v-btn>
+                <div class="card-footer">
+                  <v-btn
+                    color="deep-purple"
+                    variant="flat"
+                    block
+                    @click.stop="$emit('go-to-algorithm', algorithm.link)"
+                  >
+                    Comenzar a Aprender
+                    <v-icon right>mdi-arrow-right</v-icon>
+                  </v-btn>
+                </div>
               </div>
-            </div>
-          </v-col>
-        </v-row>
-      </div>
-    </v-container>
-  </section>
+            </v-col>
+          </v-row>
+        </div>
+      </v-container>
+    </section>
+  </client-only>
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
+import { useQuizStore } from '@/stores/quiz'
 
-// Props
-const props = defineProps({
-  evaluationPassed: {
-    type: Boolean,
-    default: false
-  }
-})
+const store = useQuizStore()
+const evaluationPassed = computed(() => store.passed)
 
-// Emits
 defineEmits(['scroll-to-evaluation', 'go-to-algorithm'])
 
-// Estado
 const hoveredCard = ref(null)
 
-// Datos de algoritmos
 const algorithms = [
   {
     title: 'Redes Neuronales',
@@ -129,28 +122,9 @@ const algorithms = [
     complexity: 85,
     applications: ['Visión Computacional', 'NLP', 'Reconocimiento de Voz'],
     link: '/neuronalnets'
-  },
-  {
-    title: 'Random Forest',
-    description: 'Conjunto de árboles de decisión que votan para hacer predicciones más robustas y precisas.',
-    icon: 'mdi-forest',
-    difficulty: 'intermediate',
-    complexity: 65,
-    applications: ['Clasificación', 'Regresión', 'Feature Selection'],
-    link: '/'
-  },
-  {
-    title: 'Support Vector Machine',
-    description: 'Encuentra la mejor línea de separación entre clases maximizando el margen de decisión.',
-    icon: 'mdi-vector-difference',
-    difficulty: 'intermediate',
-    complexity: 70,
-    applications: ['Clasificación de Texto', 'Bioinformática', 'Finanzas'],
-    link: '/'
   }
 ]
 
-// Utilidades
 const getDifficultyText = (difficulty) => {
   const map = {
     'beginner': 'Principiante',
@@ -166,6 +140,7 @@ const getComplexityColor = (complexity) => {
   return 'error'
 }
 </script>
+
 
 <style scoped>
 .locked-overlay {

@@ -34,7 +34,7 @@
 
       <!-- Interactive Demo Section -->
       <section class="demo-section py-16">
-        <DemoSection :demo-algorithms="demoAlgorithms" />
+        <DemoSection />
       </section>
 
       <!-- Learning Path Section -->
@@ -79,10 +79,6 @@ const scrollToContent = () => {
 const goToAlgorithm = (link) => {
   navigateTo(link)
 }
-
-onUnmounted(() => {
-  stopTraining()
-})
 </script>
 
 <style scoped>

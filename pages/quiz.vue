@@ -1,47 +1,100 @@
-<script setup>
-// import { onMounted } from 'vue'
-// import { useQuizStore } from '@/stores/quiz'
-
-const quiz = useQuizStore()
-
-onMounted(async () => {
-  await quiz.fetchQuestions()
-  await quiz.fetchCorrectAnswers()
-})
-</script>
-
 <template>
-  <div v-if="quiz.questions.length > 0">
-    <h1 class="text-2xl font-bold mb-4">Cuestionario de Redes Neuronales</h1>
+  <section class="quiz-section py-16">
+    <v-container>
+      <h2 class="text-center mb-8">🧠 Evaluación sobre Redes Neuronales</h2>
 
-    <div v-for="q in quiz.questions" :key="q.id" class="mb-6 border-b pb-4">
-      <p class="font-semibold mb-2">{{ q.id }}. {{ q.question }}</p>
-      <div class="space-y-1">
-        <div v-for="(text, key) in q.answers" :key="key">
-          <label class="flex items-center gap-2">
-            <input
-              type="radio"
-              :name="q.id"
+      <!-- Preguntas (solo se muestran si está montado y hay preguntas) -->
+      <div v-if="mounted && quizStore.questions.length">
+        <div
+          v-for="question in quizStore.questions"
+          :key="question.id"
+          class="mb-6 pa-4 rounded-lg bg-white shadow"
+        >
+          <h3 class="mb-2">{{ question.id }}. {{ question.question }}</h3>
+
+          <v-radio-group
+            v-model="quizStore.userAnswers[question.id]"
+            :disabled="quizChecked"
+          >
+            <v-radio
+              v-for="(answer, key) in question.answers"
+              :key="key"
+              :label="answer"
               :value="key"
-              v-model="quiz.userAnswers[q.id]"
             />
-            {{ key }}) {{ text }}
-          </label>
+          </v-radio-group>
+
+          <!-- Resultado por pregunta -->
+          <div v-if="quizChecked" class="mt-2">
+            <p v-if="quizStore.results[question.id]" class="text-green-600">
+              ✔️ Respuesta correcta
+            </p>
+            <p v-else class="text-red-600">
+              ❌ Incorrecto. La correcta era: {{ question.answers[correctAnswer(question.id)] }}
+            </p>
+          </div>
+        </div>
+
+        <!-- Botón de verificar -->
+        <div class="text-center mt-6">
+          <v-btn color="primary" @click="verificarRespuestas" v-if="!quizChecked">
+            Verificar Respuestas
+          </v-btn>
         </div>
       </div>
 
-      <div v-if="quiz.results[q.id] !== undefined" class="mt-2 text-sm font-medium"
-           :class="quiz.results[q.id] ? 'text-green-600' : 'text-red-600'">
-        {{ quiz.results[q.id] ? '✅ Correcto' : '❌ Incorrecto' }}
+      <!-- Resultado final -->
+      <div v-if="quizStore.passed && quizChecked" class="text-center mt-8">
+        <h2 class="mb-4">🎉 ¡Evaluación aprobada!</h2>
+        <v-btn color="success" @click="goBackToIndex">Volver al Inicio</v-btn>
       </div>
-    </div>
 
-    <v-btn @click="quiz.verificar" class="mt-4 px-4 py-2 bg-blue-600 text-black rounded">
-      Verificar respuestas
-    </v-btn>
-  </div>
-
-  <div v-else>
-    <p class="text-center">Cargando preguntas...</p>
-  </div>
+      <div v-else-if="quizChecked && !quizStore.passed" class="text-center mt-8">
+        <h2 class="mb-4 text-red-600">❌ Aún hay respuestas incorrectas</h2>
+        <v-btn color="warning" @click="resetQuiz">Intentar de nuevo</v-btn>
+      </div>
+    </v-container>
+  </section>
 </template>
+
+<script setup>
+import { onMounted, ref } from 'vue'
+import { useRouter } from 'vue-router'
+import { useQuizStore } from '@/stores/quiz'
+
+const router = useRouter()
+const quizStore = useQuizStore()
+const quizChecked = ref(false)
+const mounted = ref(false)
+
+const verificarRespuestas = () => {
+  quizStore.verificar()
+  quizChecked.value = true
+}
+
+const resetQuiz = () => {
+  quizStore.userAnswers = {}
+  quizStore.results = {}
+  quizChecked.value = false
+}
+
+const goBackToIndex = () => {
+  router.push('/')
+}
+
+const correctAnswer = (id) => {
+  return quizStore.correctAnswers[id]
+}
+
+onMounted(async () => {
+  await quizStore.fetchQuestions()
+  await quizStore.fetchCorrectAnswers()
+  mounted.value = true
+})
+</script>
+
+<style scoped>
+.quiz-section {
+  background: #f5f5f5;
+}
+</style>
