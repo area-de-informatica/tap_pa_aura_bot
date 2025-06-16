@@ -1,3 +1,9 @@
+# Integrantes
+
+# Jesus Gonzalez
+# Yuliana Otero
+# Pedro Romero
+
 
 
 # Nuxt Minimal Starter
