@@ -25,7 +25,7 @@
 
   <!-- Créditos -->
   <div class="text-caption mt-2" style="text-align: center;">
-    Desarrollado por <strong>Jesus David Gonzales</strong><br>&copy; {{ new Date().getFullYear() }} 
+    Desarrollado por <strong> by Jesus David Gonzales</strong><br>&copy; {{ new Date().getFullYear() }} 
   </div>
 </v-footer>
   </v-app>
