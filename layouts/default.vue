@@ -19,7 +19,7 @@
   <div class="text-caption font-weight-light px-4 mb-2" style="max-width: 800px; text-align: center;">
     Este OVA fue desarrollado como recurso para <strong>Inteligencia Computacional</strong> en la <strong>Universidad de Córdoba</strong>.
   </div>
-
+//holiiii
   <!-- Separador -->
   <v-divider class="my-2" color="grey lighten-1" :thickness="2" style="width: 100%;" />
 
